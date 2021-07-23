@@ -4,7 +4,10 @@ const path = require('path');
 const fs = require("fs");
 const webpages = JSON.parse(fs.readFileSync("./src/pages/pages.json", "utf8"));
 const DashboardPlugin = require("webpack-dashboard/plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+
+const devMode = process.env.NODE_ENV !== "production";
 
 const entryHtmlPlugins = webpages.map(function(entryName) {
     return new HtmlWebpackPlugin({
@@ -37,19 +40,24 @@ const entryHtmlPlugins = webpages.map(function(entryName) {
 module.exports = {
 
     mode: "production",
-    devtool: false,
+    devtool: false, //"source-map"
     entry: path.resolve(__dirname, "index.js"),
     target: 'web',
 
-    devServer: {
-        contentBase: path.join(__dirname, "dist"),
-        watchContentBase: true,
-        compress: true,
-        historyApiFallback: true,
-        hot: true,
-        port: 9000,
-        open: true,
-        serveIndex: true,
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                js: {
+                    name: 'vendors',
+                    test: /[\\/]node_modules[\\/]/,
+                    filename: "assets/js/[name].min.js",
+                    chunks: 'all',
+                    // priority: 30,
+                    enforce: true
+                }
+            }
+        },
+
     },
 
 
@@ -57,10 +65,19 @@ module.exports = {
         rules: [{
                 test: /\.(s[ac]|c)ss$/i,
                 exclude: /node_modules/,
-                use: ["style-loader", {
+                use: [{
+                    
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: path.join(__dirname, './dist/')
+                    }
+                
+                }, {
                     loader: "css-loader",
                     options: {
-                        importLoaders: 2
+                        modules: true,
+                        importLoaders: 2,
+                        url: true,
                     }
                 }, "postcss-loader", {
                     loader: "sass-loader",
@@ -82,7 +99,7 @@ module.exports = {
                 }, ],
             },
             {
-                test: /\.(gif|png|jpe?g|mp4|webm)$/,
+                test: /\.(gif|png|jpe?g)$/,
                 type: 'asset/resource',
                 generator: {
                     filename: 'assets/img/[name][ext]'
@@ -105,7 +122,7 @@ module.exports = {
                 generator: {
                     filename: 'assets/fonts/[name][ext]'
                 }
-              },
+            },
         ]
     },
 
@@ -113,7 +130,7 @@ module.exports = {
 
     output: {
         path: path.join(__dirname, './', "dist"),
-        filename: "bundle-[hash].js",
+        filename: "assets/js/bundle-[fullhash].js",
         clean: true,
     },
 
@@ -132,6 +149,10 @@ module.exports = {
 
     plugins: [
             new DashboardPlugin(),
+            new MiniCssExtractPlugin({
+                filename: "assets/css/[name].css",
+                chunkFilename: "assets/css/[id].css",
+            }),
             new WebPak.HotModuleReplacementPlugin(),
             new WebPak.ProvidePlugin({
                 $: "jquery",

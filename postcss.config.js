@@ -12,7 +12,7 @@ module.exports = {
   plugins: {
 
     'postcss-import': {},
-    // 'postcss-preset-env': {},
+    'postcss-preset-env': {},
     'postcss-short': {},
     'postcss-font-magician': {
       foundries: 'custom bootstrap google',
