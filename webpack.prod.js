@@ -2,11 +2,12 @@ const WebPak = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const fs = require("fs");
+const glob = require('glob');
 const webpages = JSON.parse(fs.readFileSync("./src/pages/pages.json", "utf8"));
 const DashboardPlugin = require("webpack-dashboard/plugin");
+
+
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
-
 const devMode = process.env.NODE_ENV !== "production";
 
 const entryHtmlPlugins = webpages.map(function(entryName) {
@@ -40,7 +41,7 @@ const entryHtmlPlugins = webpages.map(function(entryName) {
 module.exports = {
 
     mode: "production",
-    devtool: false, //"source-map"
+    devtool: "source-map", //"source-map"
     entry: path.resolve(__dirname, "index.js"),
     target: 'web',
 

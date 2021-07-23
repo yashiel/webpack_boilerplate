@@ -37,7 +37,7 @@ const entryHtmlPlugins = webpages.map(function(entryName) {
 module.exports = {
 
     mode: "development",
-    devtool: 'source-map',
+    devtool: 'inline-source-map',
     entry: path.resolve(__dirname, "index.js"),
     target: 'web',
 
@@ -50,6 +50,7 @@ module.exports = {
         port: 9000,
         open: true,
         serveIndex: true,
+        // writeToDisk:true
     },
 
 

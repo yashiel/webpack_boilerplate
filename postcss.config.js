@@ -7,14 +7,22 @@ let COMPATIBILITY = [
   "Firefox ESR"
 ];
 
-module.exports = {
-  parser: 'postcss-scss',
-  plugins: {
-
-    'postcss-import': {},
-    'postcss-preset-env': {},
-    'postcss-short': {},
-    'postcss-font-magician': {
+let environment = {
+  plugins: [
+    require('webp-in-css/plugin'),
+    require('postcss-inline-svg'),
+    require('postcss-svgo'),
+    require('postcss-nested'),
+    require('postcss-import'),
+    require('postcss-preset-env'),
+    require('postcss-short'),
+    require('autoprefixer')({
+      remove: false,
+      grid: true,
+      flexbox: true,
+      supports: true
+    }),
+    require('postcss-font-magician')({
       foundries: 'custom bootstrap google',
       custom: {
         'mihcm': {
@@ -116,14 +124,18 @@ module.exports = {
           }
         }
       }
-    },
-    'autoprefixer': {
-      remove: false,
-      grid: true,
-      flexbox: true,
-      supports: true
-    },
-    
-
-  }
+    }),
+  ]
 }
+
+if(process.env.NODE_ENV !== 'production'){
+  environment.plugins.push(
+    require('@fullhuman/postcss-purgecss')({
+      content: ['./src/**/*.html']
+    }),
+    
+  )
+}
+
+
+module.exports = environment;
