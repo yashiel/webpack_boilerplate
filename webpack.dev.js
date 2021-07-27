@@ -58,7 +58,9 @@ module.exports = {
         rules: [{
                 test: /\.(s[ac]|c)ss$/i,
                 exclude: /node_modules/,
-                use: ["style-loader", "css-loader", "postcss-loader", {
+                use: ["style-loader", "css-loader", {
+                    loader: 'resolve-url-loader',
+                }, "postcss-loader", {
                     loader: "sass-loader",
                     options: {
                         sourceMap: true,
@@ -101,7 +103,7 @@ module.exports = {
                 generator: {
                     filename: 'assets/fonts/[name][ext]'
                 }
-              },
+            },
         ]
     },
 
@@ -111,6 +113,7 @@ module.exports = {
         path: path.join(__dirname, './', "dist"),
         filename: "bundle.js",
         clean: true,
+        // assetModuleFilename: 'assets/img/[name][ext]'
     },
 
     resolveLoader: {
