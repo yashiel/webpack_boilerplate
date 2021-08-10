@@ -4,7 +4,6 @@ const path = require('path');
 const fs = require("fs");
 const glob = require('glob');
 const webpages = JSON.parse(fs.readFileSync("./src/pages/pages.json", "utf8"));
-const DashboardPlugin = require("webpack-dashboard/plugin");
 
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -76,9 +75,9 @@ module.exports = {
                 }, {
                     loader: "css-loader",
                     options: {
-                        modules: true,
-                        importLoaders: 2,
-                        url: true,
+                        // modules: true,
+                        // importLoaders: 2,
+                        // url: true,
                     }
                 }, "postcss-loader", {
                     loader: "sass-loader",
@@ -149,12 +148,11 @@ module.exports = {
 
 
     plugins: [
-            new DashboardPlugin(),
             new MiniCssExtractPlugin({
                 filename: "assets/css/[name].css",
                 chunkFilename: "assets/css/[id].css",
             }),
-            new WebPak.HotModuleReplacementPlugin(),
+            
             new WebPak.ProvidePlugin({
                 $: "jquery",
                 jQuery: "jquery",
